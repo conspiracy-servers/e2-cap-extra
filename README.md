@@ -1,2 +1,3 @@
-# e2-cap-extra
- An Expression 2 core that adds extra CAP (Stargate) functions.
+# E2: Stargate
+
+An Expression 2 core that adds extra functions for CAP/Stargate.
