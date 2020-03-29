@@ -2,19 +2,17 @@ E2Lib.RegisterExtension("jumper",true,"CAP Extra: Adds extra functions for Puddl
 
 -- Is it a valid Puddle Jumper?
 local function isJumperValid(ent)
-	return IsValid(ent)==true && ent:GetClass()=="puddle_jumper"
+	return IsValid(ent)==true&&ent:GetClass()=="puddle_jumper"
 end
 
 -- Convert bool to number, opposite of bool(any)
 local function num(bool)
-	if(bool==true)then
-		return 1
-	else
-		return 0
-	end
+	return bool==true&&1||0
 end
 
--- Initialise
+--[[----------------------------------------------------------
+Initialise
+----------------------------------------------------------]]--
 local function isJumperInitialised(ent)
 	return num(ent.Inflight==true)
 end
@@ -51,13 +49,13 @@ e2function number entity:stargateJumperSetInitialise(number bool)
 			if(!this.Cloaked)then
 				this:SpawnPilot(this:GetPos()+this:GetForward()*47.5+this:GetUp()*-17.5+this:GetRight()*32.5)
 			end
-			--return 1
 		end
 		this.Entered=true
 		timer.Simple(0.75,function()
 			this.AllowActivation=true
 			this.LiftOff=false
 		end)
+		return num(isJumperInitialised(this)==1)
 	elseif(bool==0&&isJumperInitialised(this)==1)then
 		-- https://github.com/RafaelDeJongh/cap/blob/master/lua/entities/puddle_jumper/server/sv_control.lua#L3
 		if(IsValid(this.PilotAvatar)==true)then
@@ -89,9 +87,9 @@ e2function number entity:stargateJumperSetInitialise(number bool)
 		timer.Simple(0.75,function()
 			this.AllowActivation=true
 		end)
-		--return 1
+		return num(isJumperInitialised(this)==0)
 	end
-	return isJumperInitialised(this) --0
+	return 0
 end
 
 __e2setcost(1)
@@ -100,23 +98,30 @@ e2function number entity:stargateJumperGetInitialise()
 	return isJumperInitialised(this)
 end
 
--- Shield
+--[[----------------------------------------------------------
+Shield
+----------------------------------------------------------]]--
+local function canJumperShield(ent)
+	return num(ent.CanShield==true&&ent.NextUse.Shields<CurTime()&&IsValid(ent.Shields)==true)
+end
+
 local function isJumperShielded(ent)
-	return num(ent.Shields:Enabled()==true&&ent.Shielded==true)
+	return num(ent.Shields:Enabled()==true)
 end
 
 __e2setcost(1)
 e2function number entity:stargateJumperSetShield(number bool)
 	if(isJumperValid(this)==false)then return 0 end
+	if(canJumperShield(this)==0)then return 0 end
 	-- https://github.com/RafaelDeJongh/cap/blob/master/lua/entities/puddle_jumper/server/sv_toggles.lua#L13
 	if(bool==1&&isJumperShielded(this)==0)then
 		this:ToggleShield()
-		this.Shielded=true
+		return num(isJumperShielded(this)==1)
 	elseif(bool==0&&isJumperShielded(this)==1)then
 		this:ToggleShield()
-		this.Shielded=false
+		return num(isJumperShielded(this)==0)
 	end
-	return isJumperShielded(this)
+	return 0
 end
 
 __e2setcost(1)
@@ -126,12 +131,25 @@ e2function number entity:stargateJumperGetShield()
 end
 
 __e2setcost(1)
+e2function number entity:stargateJumperCanShield()
+	if(isJumperValid(this)==false)then return 0 end
+	return canJumperShield(this)
+end
+
+__e2setcost(1)
 e2function number entity:stargateJumperGetShieldStrength()
 	if(isJumperValid(this)==false)then return 0 end
 	return self.Shields.Strength
 end
 
--- Cloak
+--[[----------------------------------------------------------
+Cloak
+----------------------------------------------------------]]--
+local function canJumperCloak(ent)
+	return num(ent.CanCloak==true&&ent.CanDoCloak==true)
+end
+
+
 local function isJumperCloaked(ent)
 	return num(ent.Cloaked==true)
 end
@@ -139,18 +157,25 @@ end
 __e2setcost(1)
 e2function number entity:stargateJumperSetCloak(number bool)
 	if(isJumperValid(this)==false)then return 0 end
+	if(canJumperCloak(this)==0)then return 0 end
 	if(bool==1&&isJumperCloaked(this)==0)then
 		this:ToggleCloak()
-		this.Cloaked=true
+		return num(isJumperCloaked(this)==1)
 	elseif(bool==0&&isJumperCloaked(this)==1)then
 		this:ToggleCloak()
-		this.Cloaked=false
+		return num(this.AnimCloaked==false) -- We can't use this.Cloaked because it isn't set to false until the animation finishes playing (after 1.75s)
 	end
-	return isJumperCloaked(this)
+	return 0
 end
 
 __e2setcost(1)
 e2function number entity:stargateJumperGetCloak()
 	if(isJumperValid(this)==false)then return 0 end
 	return isJumperCloaked(this)
+end
+
+__e2setcost(1)
+e2function number entity:stargateJumperCanCloak()
+	if(isJumperValid(this)==false)then return 0 end
+	return canJumperCloak(this)
 end

@@ -34,8 +34,10 @@ E2Helper.Descriptions["stargateJumperGetCloakOperational"]="Returns 1 if the Pud
 E2Helper.Descriptions["stargateJumperGetWeaponsOperational"]="Returns 1 if the Puddle Jumper's weapons are operational (not destroyed), 0 if they aren't."
 E2Helper.Descriptions["stargateJumperGetEngineOperational"]="Returns 1 if the Puddle Jumper's engine is operational (not destroyed), 0 if they aren't."
 
+E2Helper.Descriptions["stargateJumperCanShield"]="Returns 1 if the Puddle Jumper's is able to toggle it's shield, 0 otherwise."
+E2Helper.Descriptions["stargateJumperCanCloak"]="Returns 1 if the Puddle Jumper's is able to toggle it's cloak, 0 otherwise."
+
 E2Helper.Descriptions["stargateJumperSelfDestruct"]="Self destructs the Puddle Jumper. Returns 1 if successful, 0 otherwise."
 E2Helper.Descriptions["stargateJumperExitDriver"]="Forces the current driver to leave the Puddle Jumper. Returns 1 if successful, 0 otherwise."
 E2Helper.Descriptions["stargateJumperFireDrone"]="Fires a drone from the Puddle Jumper's weapon pods. Returns 1 if successful, 0 otherwise. You must wait 0.5 seconds before firing another drone."
-
 E2Helper.Descriptions["stargateJumperMove"]="Moves the Puddle Jumper to the specified position, relative to itself. Returns 1 if successful, 0 otherwise."
